@@ -20,6 +20,8 @@
 #include "common.h"
 #include "extendedcommands.h"
 
+#include <sys/reboot.h>
+
 char* MENU_HEADERS[] = { "TeamCooper",
                          NULL };
 
@@ -44,6 +46,14 @@ int device_reboot_now(volatile char* key_pressed, int key_code) {
 }
 
 int device_perform_action(int which) {
+    switch (which) {
+        case ITEM_REBOOT:
+            __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, "recovery_done");
+            break;
+        case ITEM_POWEROFF:
+            __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_POWER_OFF, NULL);
+            break;
+    }
     return which;
 }
 
