@@ -125,30 +125,42 @@ void load_volume_table() {
                 device2 = NULL;
             }
         }
+            	char *fs_type2 = strtok (NULL, " \t\n");
+                char *fs_options = strtok (NULL, " \t\n");
+                char *fs_options2 = strtok (NULL, " \t\n");
 
         if (mount_point && fs_type && device) {
             while (num_volumes >= alloc) {
                 alloc *= 2;
                 device_volumes = realloc(device_volumes, alloc*sizeof(Volume));
             }
-            device_volumes[num_volumes].mount_point = strdup(mount_point);
-            device_volumes[num_volumes].fs_type = strdup(fs_type);
-            device_volumes[num_volumes].device = strdup(device);
-            device_volumes[num_volumes].device2 =
-                device2 ? strdup(device2) : NULL;
+             device_volumes[num_volumes].mount_point =
+			strdup (mount_point);
+		      device_volumes[num_volumes].fs_type =
+			!is_null (fs_type2) ? strdup (fs_type2) :
+			strdup (fs_type);
+		      device_volumes[num_volumes].device = strdup (device);
+		      device_volumes[num_volumes].device2 =
+			!is_null (device2) ? strdup (device2) : NULL;
+		      device_volumes[num_volumes].fs_type2 =
+			!is_null (fs_type2) ? strdup (fs_type) : NULL;
 
-            device_volumes[num_volumes].length = 0;
-
-            device_volumes[num_volumes].fs_type2 = NULL;
-            device_volumes[num_volumes].fs_options = NULL;
-            device_volumes[num_volumes].fs_options2 = NULL;
-            device_volumes[num_volumes].lun = NULL;
-
-            if (parse_options(options, device_volumes + num_volumes) != 0) {
-                LOGE("skipping malformed recovery.fstab line: %s\n", original);
-            } else {
+		      if (!is_null (fs_type2))
+			      {
+				device_volumes[num_volumes].fs_options2 =
+				  dupe_string (fs_options);
+				device_volumes[num_volumes].fs_options =
+				  dupe_string (fs_options2);
+			      }
+		      else
+			      {
+				device_volumes[num_volumes].fs_options2 =
+				  NULL;
+				device_volumes[num_volumes].fs_options =
+				  dupe_string (fs_options);
+			      }
                 ++num_volumes;
-            }
+            
         } else {
             LOGE("skipping malformed recovery.fstab line: %s\n", original);
         }
