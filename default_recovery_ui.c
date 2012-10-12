@@ -31,9 +31,6 @@ char* MENU_ITEMS[] = { "reboot system now",
                        "advanced",
                        NULL };
 
-void device_ui_init(UIParameters* ui_parameters) {
-}
-
 int device_recovery_start() {
     return 0;
 }

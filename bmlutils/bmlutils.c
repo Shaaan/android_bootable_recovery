@@ -25,11 +25,11 @@
 #define BML_UNLOCK_ALL				0x8A29		///< unlock all partition RO -> RW
 
 #ifndef BOARD_BML_BOOT
-#define BOARD_BML_BOOT              "/dev/block/bml7"
+#define BOARD_BML_BOOT              "/dev/block/bml8"
 #endif
 
 #ifndef BOARD_BML_RECOVERY
-#define BOARD_BML_RECOVERY          "/dev/block/bml8"
+#define BOARD_BML_RECOVERY          "/dev/block/bml9"
 #endif
 
 static int restore_internal(const char* bml, const char* filename)
