@@ -556,18 +556,11 @@ int control_usb_storage(Volume **volumes, bool enable) {
 
 void show_mount_usb_storage_menu()
 {
-    // Build a list of Volume objects; some or all may not be valid
-    Volume* volumes[MAX_NUM_USB_VOLUMES] = {
-        volume_for_path("/sdcard"),
-        volume_for_path("/emmc"),
-        volume_for_path("/external_sd")
-    };
-
-    // Enable USB storage
-    if (control_usb_storage(volumes, 1))
-        return;
-
-    static char* headers[] = {  "USB Mass Storage device",
+    char command[PATH_MAX];
+    Volume *vol = volume_for_path("/sdcard");
+    sprintf(command, "echo %s > /sys/devices/platform/usb_mass_storage/lun0/file", vol->device);
+    __system(command);
+    static char* headers[] = { "USB Mass Storage device",
                                 "Leaving this menu unmount",
                                 "your SD card from your PC.",
                                 "",
@@ -583,8 +576,8 @@ void show_mount_usb_storage_menu()
             break;
     }
 
-    // Disable USB storage
-    control_usb_storage(volumes, 0);
+    __system("echo '' > /sys/devices/platform/usb_mass_storage/lun0/file");
+    __system("echo 0 > /sys/devices/platform/usb_mass_storage/lun0/enable");
 }
 
 int confirm_selection(const char* title, const char* confirm)
